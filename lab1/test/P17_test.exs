@@ -15,6 +15,6 @@ defmodule P17Test do
   end
 
   test "final answer 1..1000 = 21124" do
-    assert Euler17.total_1_to_1000() == 21124
+    assert Euler17.total_1_to_1000() == 21_124
   end
 end
