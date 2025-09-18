@@ -1,5 +1,5 @@
-defmodule P13 do
-  @nums """
+defmodule Euler13 do
+  @numbers """
   37107287533902102798797998220837590246510135740250
   46376937677490009712648124896970078050417018260538
   74324986199524741059474233309513058123726617309629
@@ -102,13 +102,35 @@ defmodule P13 do
   53503534226472524250874054075591789781264330331690
   """
 
-  def list() do
-    @nums
-    |> String.split(["\n", "\r"], trim: true)
-    |> Enum.map(&String.trim/1)
-    |> Enum.reject(&(&1 == ""))
+  defp ints() do
+    @numbers
+    |> String.split(~r/\s+/, trim: true)
     |> Enum.map(&String.to_integer/1)
   end
 
-  def first10(sum), do: sum |> Integer.to_string() |> String.slice(0, 10)
+  # 1
+  def first10_enum() do
+    ints()
+    |> Enum.reduce(0, &+/2)
+    |> Integer.to_string()
+    |> binary_part(0, 10)
+  end
+
+  def first10_rec(), do: ints() |> sum_rec() |> to10()
+  defp sum_rec([]), do: 0
+  defp sum_rec([h | t]), do:  h + sum_rec(t)
+
+  def first10_tail(), do: ints() |> sum_tail(0) |> to10()
+  defp sum_tail([], acc), do: acc
+  defp sum_tail([h | t], acc), do: sum_tail(t, acc + h)
+
+  def first10_stream() do
+    @numbers
+    |> String.split(~r/\s+/, trim: true)
+    |> Stream.map(&String.to_integer/1)
+    |> Enum.reduce(0, &+/2)
+    |> to10()
+  end
+
+  defp to10(n), do: n |> Integer.to_string() |> binary_part(0, 10)
 end
