@@ -118,7 +118,7 @@ defmodule Euler13 do
 
   def first10_rec(), do: ints() |> sum_rec() |> to10()
   defp sum_rec([]), do: 0
-  defp sum_rec([h | t]), do:  h + sum_rec(t)
+  defp sum_rec([h | t]), do: h + sum_rec(t)
 
   def first10_tail(), do: ints() |> sum_tail(0) |> to10()
   defp sum_tail([], acc), do: acc
