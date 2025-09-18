@@ -15,5 +15,4 @@ defmodule P13Test do
       assert fun.() == @expected
     end)
   end
-
 end
