@@ -31,19 +31,25 @@ jobs:
           restore-keys: ${{ runner.os }}-mix-
 
       - name: Get deps
+        working-directory: lab1
         run: mix deps.get --only test
 
       - name: Check formatting
+        working-directory: lab1
         run: mix format --check-formatted
 
       - name: Compile (warnings as errors)
+        working-directory: lab1
         run: MIX_ENV=test mix compile
 
       - name: Credo (strict)
+        working-directory: lab1
         run: mix credo --strict
 
       - name: Dialyzer
+        working-directory: lab1
         run: mix dialyzer --format short
 
       - name: Run tests
+        working-directory: lab1
         run: mix test --trace
