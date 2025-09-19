@@ -112,6 +112,29 @@ defmodule Euler13 do
     |> Enum.map(&String.to_integer/1)
   end
 
+  defp to10(n), do: n |> Integer.to_string() |> binary_part(0, 10)
+
+  # recursion 
+  def first10_rec() do
+    ints()
+    |> sum_rec()
+    |> to10()
+  end
+
+  defp sum_rec([]), do: 0
+  defp sum_rec([h | t]), do: h + sum_rec(t)
+
+  # tail recursion
+  def first10_tail() do
+    ints()
+    |> sum_tail(0)
+    |> to10()
+  end
+
+  defp sum_tail([], acc), do: acc
+  defp sum_tail([h | t], acc), do: sum_tail(t, acc + h)
+
+  # module
   def first10_enum() do
     ints()
     |> Enum.reduce(0, &+/2)
@@ -119,14 +142,7 @@ defmodule Euler13 do
     |> binary_part(0, 10)
   end
 
-  def first10_rec(), do: ints() |> sum_rec() |> to10()
-  defp sum_rec([]), do: 0
-  defp sum_rec([h | t]), do: h + sum_rec(t)
-
-  def first10_tail(), do: ints() |> sum_tail(0) |> to10()
-  defp sum_tail([], acc), do: acc
-  defp sum_tail([h | t], acc), do: sum_tail(t, acc + h)
-
+  # lazy
   def first10_stream() do
     @numbers
     |> String.split(~r/\s+/, trim: true)
@@ -134,6 +150,4 @@ defmodule Euler13 do
     |> Enum.reduce(0, &+/2)
     |> to10()
   end
-
-  defp to10(n), do: n |> Integer.to_string() |> binary_part(0, 10)
 end

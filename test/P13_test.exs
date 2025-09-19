@@ -3,7 +3,7 @@ defmodule P13Test do
 
   @expected "5537376230"
 
-  test "P13 test" do
+  test "P13 test all variants" do
     variants = [
       &Euler13.first10_enum/0,
       &Euler13.first10_tail/0,
