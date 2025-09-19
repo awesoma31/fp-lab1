@@ -1,20 +1,24 @@
 defmodule P17Test do
   use ExUnit.Case, async: true
 
-  test "1..5 sum = 19" do
-    sum = 1..5 |> Enum.map(&Euler17.letters_len/1) |> Enum.sum()
-    assert sum == 19
+  test "letter() counting" do
+    assert P17.letters(342) == 23
+    assert P17.letters(115) == 20
   end
 
-  test "342 = 23 (three hundred and forty-two)" do
-    assert Euler17.letters_len(342) == 23
+  test "P17 recursion" do
+    assert P17.solve_rec() == 21124
   end
 
-  test "115 = 20 (one hundred and fifteen)" do
-    assert Euler17.letters_len(115) == 20
+  test "P17 tail recursion" do
+    assert P17.solve_tail() == 21124
   end
 
-  test "1..1000 = 21124" do
-    assert Euler17.total_1_to_1000() == 21_124
+  test "P17 module solution" do
+    assert P17.solve_map_reduce() == 21124
+  end
+
+  test "P17 infinite/lazy" do
+    assert P17.solve_inf_lazy() == 21124
   end
 end

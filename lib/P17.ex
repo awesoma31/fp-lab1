@@ -1,9 +1,16 @@
-defmodule Euler17 do
-  @moduledoc """
-  Problem 17 solution
-  """
+defmodule P17 do
+  @ones %{
+    1 => 3,
+    2 => 3,
+    3 => 5,
+    4 => 4,
+    5 => 4,
+    6 => 3,
+    7 => 5,
+    8 => 5,
+    9 => 4
+  }
 
-  @ones %{1 => 3, 2 => 3, 3 => 5, 4 => 4, 5 => 4, 6 => 3, 7 => 5, 8 => 5, 9 => 4}
   @teens %{
     10 => 3,
     11 => 6,
@@ -16,30 +23,87 @@ defmodule Euler17 do
     18 => 8,
     19 => 8
   }
-  @tens %{2 => 6, 3 => 6, 4 => 5, 5 => 5, 6 => 5, 7 => 7, 8 => 6, 9 => 6}
+
+  @tens %{
+    20 => 6,
+    30 => 6,
+    40 => 5,
+    50 => 5,
+    60 => 5,
+    70 => 7,
+    80 => 6,
+    90 => 6
+  }
+
   @hundred 7
+  @and_ 3
   @thousand 8
-  @and_len 3
 
-  def letters_len(1000), do: Map.fetch!(@ones, 1) + @thousand
+  # "simple rec"
+  def letters(1000), do: 3 + @thousand
 
-  def letters_len(n) when n >= 100 do
+  def letters(n) when n >= 100 do
     h = div(n, 100)
     r = rem(n, 100)
-    base = Map.fetch!(@ones, h) + @hundred
-    base + if r > 0, do: @and_len + letters_len(r), else: 0
+    base = @ones[h] + @hundred
+    if r == 0, do: base, else: base + @and_ + letters(r)
   end
 
-  def letters_len(n) when n >= 20 do
-    t = div(n, 10)
+  def letters(n) when n >= 20 do
+    t = div(n, 10) * 10
     r = rem(n, 10)
-    Map.fetch!(@tens, t) + if r > 0, do: Map.fetch!(@ones, r), else: 0
+    if r == 0, do: @tens[t], else: @tens[t] + @ones[r]
   end
 
-  def letters_len(n) when n >= 10, do: Map.fetch!(@teens, n)
-  def letters_len(n) when n >= 1, do: Map.fetch!(@ones, n)
+  def letters(n) when n >= 10, do: @teens[n]
+  def letters(n) when n > 0, do: @ones[n]
+  def letters(0), do: 0
 
-  def total_1_to_1000 do
-    1..1000 |> Enum.reduce(0, fn n, acc -> acc + letters_len(n) end)
+  def solve_rec, do: rec_sum(1, 1000)
+  defp rec_sum(i, max) when i > max, do: 0
+  defp rec_sum(i, max), do: letters(i) + rec_sum(i + 1, max)
+
+  # "tail recursion solution"
+  def letters_tr(n), do: letters_tr(n, 0)
+  defp letters_tr(0, acc), do: acc
+  defp letters_tr(1000, acc), do: acc + 3 + @thousand
+
+  defp letters_tr(n, acc) when n >= 100 do
+    h = div(n, 100)
+    r = rem(n, 100)
+    acc = acc + @ones[h] + @hundred + if(r == 0, do: 0, else: @and_)
+
+    letters_tr(r, acc)
+  end
+
+  defp letters_tr(n, acc) when n >= 20 do
+    t = div(n, 10) * 10
+    r = rem(n, 10)
+    acc = acc + @tens[t] + if(r == 0, do: 0, else: @ones[r])
+
+    letters_tr(0, acc)
+  end
+
+  defp letters_tr(n, acc) when n >= 10, do: letters_tr(0, acc + @teens[n])
+  defp letters_tr(n, acc) when n > 0, do: letters_tr(0, acc + @ones[n])
+
+  def solve_tail, do: do_tail(1, 1000, 0)
+  defp do_tail(i, max, acc) when i > max, do: acc
+  defp do_tail(i, max, acc), do: do_tail(i + 1, max, acc + letters_tr(i))
+
+  # "module solution"
+  def solve_map_reduce do
+    1..1000
+    |> Stream.filter(&(&1 >= 1))
+    |> Stream.map(&letters_tr/1)
+    |> Enum.sum()
+  end
+
+  # infinite lazy
+  def solve_inf_lazy do
+    Stream.iterate(1, &(&1 + 1))
+    |> Stream.take(1000)
+    |> Stream.map(&letters/1)
+    |> Enum.sum()
   end
 end
