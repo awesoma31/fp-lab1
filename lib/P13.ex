@@ -112,7 +112,6 @@ defmodule Euler13 do
     |> Enum.map(&String.to_integer/1)
   end
 
-  # 1
   def first10_enum() do
     ints()
     |> Enum.reduce(0, &+/2)
