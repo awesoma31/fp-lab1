@@ -177,6 +177,17 @@ defp sum_tail([h | t], acc), do: sum_tail(t, acc + h)
   end
 ```
 
+### Спец. синтаксис
+
+```elixir
+  def first10_for do
+    for n <- ints(), reduce: 0 do
+      acc -> acc + n
+    end
+    |> to10()
+  end
+```
+
 ### Бесконечные списки/ленивость
 
 ```elixir
@@ -186,66 +197,49 @@ defp sum_tail([h | t], acc), do: sum_tail(t, acc + h)
     |> Stream.map(&String.to_integer/1)
     |> Enum.reduce(0, &+/2)
     |> to10()
-  end
 ```
 
 ### Решение через императивный язык
 
 ```go
-var (
-	ones = map[int]int{
-		1: 3, 2: 3, 3: 5, 4: 4, 5: 4, 6: 3, 7: 5, 8: 5, 9: 4,
-	}
-	teens = map[int]int{
-		10: 3, 11: 6, 12: 6, 13: 8, 14: 8, 15: 7, 16: 7, 17: 9, 18: 8, 19: 8,
-	}
-	tens = map[int]int{
-		20: 6, 30: 6, 40: 5, 50: 5, 60: 5, 70: 7, 80: 6, 90: 6,
-	}
-	hundred  = 7
-	andWord  = 3
-	thousand = 8
+package main
+
+import (
+	"fmt"
+	"log"
+	"math/big"
+	"strings"
 )
 
-func letters(n int) int {
-	if n == 1000 {
-		return 3 + thousand
-	}
-	if n >= 100 {
-		h := n / 100
-		r := n % 100
-		base := ones[h] + hundred
-		if r == 0 {
-			return base
-		}
-		return base + andWord + letters(r)
-	}
-	if n >= 20 {
-		t := (n / 10) * 10
-		r := n % 10
-		if r == 0 {
-			return tens[t]
-		}
-		return tens[t] + ones[r]
-	}
-	if n >= 10 {
-		return teens[n]
-	}
-	if n > 0 {
-		return ones[n]
-	}
-	return 0
-}
+const data = `
+37107287533902102798797998220837590246510135740250
+    ...
+53503534226472524250874054075591789781264330331690
+`
 
-func SolveSum1to1000() int {
-	sum := 0
-	for i := 1; i <= 1000; i++ {
-		sum += letters(i)
+func p13() {
+	sum := big.NewInt(0)
+
+	for line := range strings.SplitSeq(data, "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		n := new(big.Int)
+		if _, ok := n.SetString(line, 10); !ok {
+			log.Fatalf("bad number: %q", line)
+		}
+		sum.Add(sum, n)
 	}
-	return sum
+
+	s := sum.String()
+	if len(s) < 10 {
+		fmt.Println(s)
+		return
+	}
+	fmt.Println(s[:10]) // 5537376230
 }
 ```
-
 
 ### Проблема №17
 
@@ -255,6 +249,50 @@ func SolveSum1to1000() int {
 - **Задание**: If all the numbers from 1 to 1000 inclusive were written out in words, how many letters would be used?
 
 ---
+
+### Вспомогательные элементы
+
+```elixir
+@ones %{
+  1 => 3,
+  2 => 3,
+  3 => 5,
+  4 => 4,
+  5 => 4,
+  6 => 3,
+  7 => 5,
+  8 => 5,
+  9 => 4
+}
+
+@teens %{
+  10 => 3,
+  11 => 6,
+  12 => 6,
+  13 => 8,
+  14 => 8,
+  15 => 7,
+  16 => 7,
+  17 => 9,
+  18 => 8,
+  19 => 8
+}
+
+@tens %{
+  20 => 6,
+  30 => 6,
+  40 => 5,
+  50 => 5,
+  60 => 5,
+  70 => 7,
+  80 => 6,
+  90 => 6
+}
+
+@hundred 7
+@and_ 3
+@thousand 8
+```
 
 ### Решение через рекурсию
 
@@ -317,12 +355,22 @@ defp do_tail(i, max, acc), do: do_tail(i + 1, max, acc + letters_tr(i))
 ### Решение через модульность
 
 ```elixir
-def solve_map_reduce do
-  1..1000
-  |> Stream.filter(fn n -> n >= 1 end)
-  |> Stream.map(&letters_tr/1)
-  |> Enum.sum()
-end
+  def solve_map do
+    Enum.map(0..999, fn x -> x + 1 end)
+    |> Stream.filter(&(&1 >= 1))
+    |> Stream.map(&letters_tr/1)
+    |> Enum.sum()
+  end
+```
+
+### Спец. синтаксис
+
+```elixir
+  def solve_for do
+    for n <- 1..1000, reduce: 0 do
+      acc -> acc + letters(n)
+    end
+  end
 ```
 
 ### Бесконечные списки/ленивость
@@ -392,3 +440,10 @@ func SolveSum1to1000() int {
 	return sum
 }
 ```
+
+### Выводы
+
+В ходе решения задач я применил некоторые приемы, присущие функциональным языкам:
+
+- Рекурсия - обычная и хвостовая - для реализации циклов
+- Pattern Matching (сопоставление с образцом) - для реализации ветвления, привязывания значений; паттерны и списки; guards у функций, etc.
