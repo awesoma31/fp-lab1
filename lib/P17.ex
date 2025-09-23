@@ -1,4 +1,6 @@
 defmodule P17 do
+  @moduledoc false
+
   @ones %{
     1 => 3,
     2 => 3,
@@ -39,7 +41,7 @@ defmodule P17 do
   @and_ 3
   @thousand 8
 
-  # "simple rec"
+  # simple rec
   def letters(1000), do: 3 + @thousand
 
   def letters(n) when n >= 100 do
@@ -63,7 +65,7 @@ defmodule P17 do
   defp rec_sum(i, max) when i > max, do: 0
   defp rec_sum(i, max), do: letters(i) + rec_sum(i + 1, max)
 
-  # "tail recursion solution"
+  # tail recursion solution
   def letters_tr(n), do: letters_tr(n, 0)
   defp letters_tr(0, acc), do: acc
   defp letters_tr(1000, acc), do: acc + 3 + @thousand
@@ -91,15 +93,13 @@ defmodule P17 do
   defp do_tail(i, max, acc) when i > max, do: acc
   defp do_tail(i, max, acc), do: do_tail(i + 1, max, acc + letters_tr(i))
 
-  # "module solution"
-  def solve_map_reduce do
-    1..1000
+  def solve_map do
+    Enum.map(0..999, fn x -> x + 1 end)
     |> Stream.filter(&(&1 >= 1))
     |> Stream.map(&letters_tr/1)
     |> Enum.sum()
   end
 
-  # infinite lazy
   def solve_inf_lazy do
     Stream.iterate(1, &(&1 + 1))
     |> Stream.take(1000)

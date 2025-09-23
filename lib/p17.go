@@ -1,4 +1,6 @@
-package euler17
+package main
+
+import "fmt"
 
 var (
 	ones = map[int]int{
@@ -51,4 +53,11 @@ func SolveSum1to1000() int {
 		sum += letters(i)
 	}
 	return sum
+}
+
+func main() {
+	fmt.Println("13:")
+	p13()
+	fmt.Println("17:")
+	fmt.Println(SolveSum1to1000())
 }

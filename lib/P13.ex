@@ -106,7 +106,7 @@ defmodule Euler13 do
   53503534226472524250874054075591789781264330331690
   """
 
-  defp ints() do
+  defp ints do
     @numbers
     |> String.split(~r/\s+/, trim: true)
     |> Enum.map(&String.to_integer/1)
@@ -114,8 +114,8 @@ defmodule Euler13 do
 
   defp to10(n), do: n |> Integer.to_string() |> binary_part(0, 10)
 
-  # recursion 
-  def first10_rec() do
+  # recursion
+  def first10_rec do
     ints()
     |> sum_rec()
     |> to10()
@@ -125,7 +125,7 @@ defmodule Euler13 do
   defp sum_rec([h | t]), do: h + sum_rec(t)
 
   # tail recursion
-  def first10_tail() do
+  def first10_tail do
     ints()
     |> sum_tail(0)
     |> to10()
@@ -135,7 +135,7 @@ defmodule Euler13 do
   defp sum_tail([h | t], acc), do: sum_tail(t, acc + h)
 
   # module
-  def first10_enum() do
+  def first10_enum do
     ints()
     |> Enum.reduce(0, &+/2)
     |> Integer.to_string()
@@ -143,7 +143,7 @@ defmodule Euler13 do
   end
 
   # lazy
-  def first10_stream() do
+  def first10_stream do
     @numbers
     |> String.split(~r/\s+/, trim: true)
     |> Stream.map(&String.to_integer/1)
