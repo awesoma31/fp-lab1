@@ -100,6 +100,12 @@ defmodule P17 do
     |> Enum.sum()
   end
 
+  def solve_for do
+    for n <- 1..1000, reduce: 0 do
+      acc -> acc + letters(n)
+    end
+  end
+
   def solve_inf_lazy do
     Stream.iterate(1, &(&1 + 1))
     |> Stream.take(1000)

@@ -142,6 +142,13 @@ defmodule Euler13 do
     |> binary_part(0, 10)
   end
 
+  def first10_for do
+    for n <- ints(), reduce: 0 do
+      acc -> acc + n
+    end
+    |> to10()
+  end
+
   # lazy
   def first10_stream do
     @numbers

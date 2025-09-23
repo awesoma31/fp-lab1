@@ -18,6 +18,10 @@ defmodule P17Test do
     assert P17.solve_map() == 21_124
   end
 
+  test "P17 for solution" do
+    assert P17.solve_for() == 21_124
+  end
+
   test "P17 infinite/lazy" do
     assert P17.solve_inf_lazy() == 21_124
   end
